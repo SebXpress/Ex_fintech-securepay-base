@@ -8,11 +8,11 @@ class TransferController {
 /**
  * Endpoint para ejecutar una transferencia bancaria (Beta).
  * POST /v1/transfer-beta/execute
- * 
- * Espera un cuerpo JSON con: { fromAccountId, toAccountId, amount }
+ * * Espera un cuerpo JSON con: { fromAccountId, toAccountId, amount }
  */
 
-  executeTransfer = (req, res) => {
+  // agregamos el parametro next en la funcion flecha para el control centralizado de errores
+  executeTransfer = (req, res, next) => {
     try {
       const { fromAccountId, toAccountId, amount } = req.body;
 
