@@ -18,6 +18,29 @@ const PORT = process.env.PORT || 3000;
 // Configuración básica para parsear JSON en las peticiones HTTP
 app.use(express.json());
 
+const jwtService = require('./src/services/jwt.service');
+
+// endpoint de autenticacion minima para el examen
+app.post('/auth/token', (req, res) => {
+  const userSimulado = {
+    id: 'usr_001',
+    email: 'estudiante.alpha@espe.edu.ec'
+  };
+
+  try {
+    const token = jwtService.signToken(userSimulado);
+    return res.status(200).json({
+      success: true,
+      token: token
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'error al firmar credenciales',
+      message: error.message
+    });
+  }
+});
+
 // Montar el enrutador principal en /v1
 app.use('/v1', routes);
 
