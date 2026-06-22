@@ -1,7 +1,12 @@
+// evitamos rutas fijas absolutas o relativas cableadas usando 
+// process.cwd() para cargar dinamicamente desde la raiz de ejecucion
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 
+// carga dinamica de llaves openssl desde la raiz del entorno de ejecucion
+const getPrivateKey = () => fs.readFileSync(path.join(process.cwd(), 'private.pem'), 'utf8');
+const getPublicKey = () => fs.readFileSync(path.join(process.cwd(), 'public.pem'), 'utf8');
 /**
  * Genera un Token JWT firmado con clave privada asimétrica (RS256).
  * 
@@ -19,7 +24,13 @@ function signToken(user) {
   // const privateKey = fs.readFileSync(path.join(__dirname, '../../private.pem'), 'utf8');
   // return jwt.sign(user, privateKey, { algorithm: 'RS256', expiresIn: '1h' });
   
-  throw new Error('Función signToken(user) no implementada. TODO (Estudiante).');
+ const privateKey = getPrivateKey();
+  const payload = {
+    sub: user.id,
+    name: user.email
+  };
+  // firmado asimetrico rs256 expiración estricta de dos minutos
+  return jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: '2m' });
 }
 
 /**
@@ -39,7 +50,9 @@ function verifyToken(token) {
   // const publicKey = fs.readFileSync(path.join(__dirname, '../../public.pem'), 'utf8');
   // return jwt.verify(token, publicKey, { algorithms: ['RS256'] });
 
-  throw new Error('Función verifyToken(token) no implementada. TODO (Estudiante).');
+  const publicKey = getPublicKey();
+  // forzar validacion exclusiva mediante llave publica y algoritmo asimetrico
+  return jwt.verify(token, publicKey, { algorithms: ['RS256'] });
 }
 
 module.exports = {

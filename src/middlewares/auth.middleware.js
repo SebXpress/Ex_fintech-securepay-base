@@ -37,16 +37,28 @@ function authMiddleware(req, res, next) {
     // 2. Adjuntar el payload de usuario a la petición, ej. req.user = decodedToken.
     // 3. Quitar o comentar la siguiente línea temporal de prueba y habilitar next() bajo validación exitosa.
 
-    console.log(`[AUTH MIDDLEWARE] Token extraído para validar: ${token.substring(0, 15)}...`);
+    const decodedToken = jwtService.verifyToken(token);
+    // inyeccion segura del contexto de identidad en la peticion
+    req.user = {
+      id: decodedToken.sub,
+      email: decodedToken.name
+    };
     
-    // NOTA TEMPORAL: Por ahora el middleware deja pasar la petición sin validar para evitar bloqueos iniciales,
-    // pero el estudiante debe implementar la validación criptográfica correspondiente.
-    next();
+    return next();
+
   } catch (error) {
     // TODO (Estudiante): Retornar una respuesta adecuada según el tipo de error (ej: Expirado o Inválido)
-    return res.status(401).json({
-      error: 'Token inválido o expirado',
-      message: error.message
+    // control de exepcion para el token expirado
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        error: 'Token expirado',
+        message: 'el tiempo de vida del token ha caducado'
+      });
+    }
+  // control de exepcion para el token invalido
+    return res.status(403).json({
+      error: 'Token invalido',
+      message: 'firma digital no autentica'
     });
   }
 }
