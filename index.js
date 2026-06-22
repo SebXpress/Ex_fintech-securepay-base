@@ -3,9 +3,14 @@
 // const Sentry = require('@sentry/node');
 // Sentry.init({ dsn: process.env.SENTRY_DSN, tracesSampleRate: 1.0 });
 
+// linea obligatoria para evitar fugas de trazas
+require("./src/instrument");
+
+// Modificamos el archivo de arranque raíz del microservicio para asegurar que sea la línea número uno absoluta, previniendo fugas de trazas y capturando el ciclo completo.
 require('dotenv').config();
 const express = require('express');
 const routes = require('./src/routes');
+const Sentry = require("@sentry/node");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,11 +32,23 @@ app.get('/', (req, res) => {
 
 // Manejo centralizado de excepciones y reporte a Sentry
 // TODO (Estudiante): Integrar el middleware de errores de Sentry: Sentry.setupExpressErrorHandler(app);
+// capturador centralizado de errores operacionales 500 y reporte automatico a sentry
 app.use((err, req, res, next) => {
   console.error('[SERVER ERROR]:', err);
+  
+  // enriquecimiento de contexto sentry con datos extraidos del token jwt
+  if (req.user) {
+    Sentry.setTag("affected_user_id", req.user.id);
+    Sentry.setUser({ id: req.user.id, email: req.user.email });
+  }
+  
+  Sentry.setTag("error_type", "OperationalError");
+  const eventId = Sentry.captureException(err);
+
   res.status(500).json({
-    error: 'Error interno del servidor',
-    message: err.message
+    error: 'error interno del servidor',
+    message: err.message,
+    sentryEventId: eventId
   });
 });
 
