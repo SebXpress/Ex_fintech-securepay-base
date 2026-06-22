@@ -31,3 +31,5 @@ getBalance = (req, res) => {
     }
   }
 }
+
+module.exports = AccountController;
