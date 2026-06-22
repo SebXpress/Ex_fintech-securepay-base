@@ -14,9 +14,7 @@ Muestra la petición exitosa usando un Bearer Token válido y con tiempo de expi
 
 ### Captura de Pantalla
 
-
-
-![Generación de Token y Acceso Válido](Consumo_api_img/Screnshot_1.png)
+![Generación de Token y Acceso Válido](caps-examen/Screenshot_1.png)
 
 ---
 
@@ -26,7 +24,7 @@ Muestra la respuesta del sistema ante un token alterado de forma maliciosa.
 
 ### Captura de Pantalla
 
-![Token Malformado o Inválido](Consumo_api_img/Screnshot_2.png)
+![Token Malformado o Inválido](caps-examen/Screenshot_2.png)
 
 ---
 
@@ -36,8 +34,7 @@ Muestra el control de excepción lógica cuando el ciclo de vida de los 2 minuto
 
 ### Captura de Pantalla
 
-
-![Token Expirado](ruta/de/la/captura3.png)
+![Token Expirado](caps-examen/Screenshot_3.png)
 
 ---
 
@@ -49,9 +46,7 @@ Captura de pantalla de la bandeja de problemas (**Issues**) de Sentry mostrando 
 
 ### Captura de Pantalla
 
-
-
-![Error Operacional 500](ruta/de/la/captura4.png)
+![Error Operacional 500](caps-examen/Screenshot_4.png)
 
 ---
 
@@ -61,8 +56,6 @@ Captura detallada donde se evidencia que Sentry guardó con éxito los metadatos
 
 ### Captura de Pantalla
 
-
-
-![Telemetría y Tags de Usuario](ruta/de/la/captura5.png)
+![Telemetría y Tags de Usuario](caps-examen/Screenshot_5.png)
 
 ---
